@@ -3,8 +3,6 @@
 import { SpaceBody } from "./SpaceBody.mjs";
 import * as cnst from "./constants.mjs";
 
-let bodyes=[];//Массив небесных тел
-
 const bSun=new SpaceBody({name:"Солнце", m: cnst.mSun, x:0, y:0, vx:0, vy:0});
 const bEarth=new SpaceBody({name:"Земля", m: cnst.mEarth, x:1, y:0, vx:0, vy: cnst.vEarth});
 const bMoon=new SpaceBody({     name: "Луна", 
@@ -14,5 +12,12 @@ const bMoon=new SpaceBody({     name: "Луна",
                                 vx: cnst.vMoon,
                                 vy: 0});
 
+let bodies=[bSun, bEarth, bMoon];
+for(let time=0;time<360*24*180;time+=dt){//Время - 180 суток
+    for(let i=0;i<bodies.length;++i){
+        bodies[i].calcForces(bodies.filter((el,index)=>index!=i));//Выполняем последовательно расчёты новых параметров для каждого тела
+    }
+    for(let i=0;i<bodies.length;++i)bodies[i].setNewCoor();
+}
 
-console.log(bSun.m);
+console.log(bEarth);
