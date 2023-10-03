@@ -28,7 +28,7 @@ export class SpaceBody{
         return this.#m;
     }
 
-    calcForces(...bodies){
+    calcForces(bodies){
     //Расчёт влияния космических тел из массива bodies на данное тело
 
         this.#newV=[...this.#v];//Копируем начальные значения скорости
@@ -37,18 +37,18 @@ export class SpaceBody{
         for(let i=0;i<bodies.length;++i){//Перебираем космичесчкие тела
             //Расчёт расстояния между телами по их координатам
             let r=0;
-            for(let j=0;j<this.#r.length;++j){
-                r+=(bodies[i].r[j]-this.r(j))**2;
+            for(let j=0;j<this.r.length;++j){
+                r+=(bodies[i].r[j]-this.r[j])**2;
             }
             r=Math.sqrt(r);//Расстояние до тела
 
-            for(let j=0;j<this.#r.length;++j){//Вычисление суммарного изменения скорости по всем координатам с учётом каждой планеты
+            for(let j=0;j<this.r.length;++j){//Вычисление суммарного изменения скорости по всем координатам с учётом каждой планеты
                 this.#newV[j]+=G*this.#m*bodies[i].m/(r**3)*(bodies[i].r[j]-this.r[j])*dt;//Добавляем приращение скорости за время dt по оси j. v=G*m*M/r3*(x-x0)*dt+v0
             }
         }
 
         //Вычисляем новые координаты тела через время dt
-        for(let j=0;j<this.#r.length;++j){
+        for(let j=0;j<this.r.length;++j){
             this.#newR+=this.#newV[j]*dt;
         }
     }

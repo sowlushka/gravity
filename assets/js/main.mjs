@@ -13,11 +13,13 @@ const bMoon=new SpaceBody({     name: "Луна",
                                 vy: 0});
 
 let bodies=[bSun, bEarth, bMoon];
-for(let time=0;time<360*24*180;time+=dt){//Время - 180 суток
+for(let time=0;time<3600*24*180;time+=cnst.dt){//Время - 180 суток
     for(let i=0;i<bodies.length;++i){
         bodies[i].calcForces(bodies.filter((el,index)=>index!=i));//Выполняем последовательно расчёты новых параметров для каждого тела
     }
-    for(let i=0;i<bodies.length;++i)bodies[i].setNewCoor();
+    for(let i=0;i<bodies.length;++i){
+        bodies[i].setNewCoor();
+    }
 }
 
 console.log(bEarth);
