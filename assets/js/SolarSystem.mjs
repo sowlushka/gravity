@@ -7,12 +7,14 @@ const startScale=2;//Исходный масштаб системы, равны�
 
 export class SolarSystem{
     canvasHeight;//Высота блока canvas
-    canvasWwidth;//Ширина блока canvas
+    canvasWidth;//Ширина блока canvas
     #canvasMinDimention;//Минимальное значение между высотой и шириной
 
     scale; // Коэффициент масштаба для прорисовки планет на canvas
     autoScale=true;//Разрешить пересчёт масштаба при добавлении/удалении объектов
     #bodies=[];//Массив объектов
+
+    solarTime=0;//Абсолютное время в Солнечной системе от начала моделирования в секундах
 
     //Координаты центра у canvas
     canvasCenter_x;
@@ -25,8 +27,8 @@ export class SolarSystem{
         this.#canvasMinDimention=this.canvasWidth>this.canvasHeight?this.canvasHeight:this.canvasWidth;
         this.scale=this.#canvasMinDimention/startScale*scaleFactor;//При старте меньшая размерность равна 2 а.е.
 
-        this.canvasCenter_x=Math.floor(this.width/2);
-        this.canvasCenter_y=Math.floor(this.height/2);
+        this.canvasCenter_x=Math.floor(this.canvasWidth/2);
+        this.canvasCenter_y=Math.floor(this.canvasHeight/2);
     }
 
     addBody(spaceBody){
@@ -34,7 +36,7 @@ export class SolarSystem{
             throw("Телам нельзя давать одинаковые имена");
         }
         this.#bodies.push(spaceBody);
-        if(autoScale) this.#recalcScale();
+        if(this.autoScale) this.#recalcScale();
 
         
     }
@@ -46,21 +48,21 @@ export class SolarSystem{
         if(this.#bodies.length==0){
             this.scale=this.#canvasMinDimention/startScale*scaleFactor;
         }else if(this.#bodies.length==1){
-            maxR=Math.sqrt(this.#bodies[0].r.reduce(sum,r_i=>sum+r_i**2,0));
-            this.scale=maxR>startScale?this.#canvasMinDimention/maxR*scaleFactor:this.#canvasMinDimention/startScale*scaleFactor;;
+            maxR=Math.sqrt(this.#bodies[0].r.reduce((sum,r_i)=>sum+r_i**2,0));
+            this.scale=maxR>startScale?this.#canvasMinDimention/maxR/2*scaleFactor:this.#canvasMinDimention/startScale*scaleFactor;;
         }else{
         //Перебираем тела в поисках максимального расстояния между ними
-            for(i=0;i<this.#bodies.length-1;++i){//счёт первого сравниваемого тела
-                for(j=i+1;j<this.#bodies.length;++j){//счёт второго сравниваемого тела
+            for(let i=0;i<this.#bodies.length-1;++i){//счёт первого сравниваемого тела
+                for(let j=i+1;j<this.#bodies.length;++j){//счёт второго сравниваемого тела
                     let r=0;
-                    for(k=0;k<this.#bodies[0].r.length;++k){//k - счётчик оси пространства
+                    for(let k=0;k<this.#bodies[0].r.length;++k){//k - счётчик оси пространства
                         r+=(this.#bodies[i].r[k]-this.#bodies[j].r[k])**2;
                     }
                     r=Math.sqrt(r);
                     if(maxR<r)maxR=r;
                 }
             }
-            this.#canvasMinDimention/maxR*scaleFactor;
+            this.#canvasMinDimention/maxR/2*scaleFactor;
         }
     }
 
@@ -73,12 +75,13 @@ export class SolarSystem{
         for(let i=0;i<this.#bodies.length;++i){
             this.#bodies[i].setNewCoor();//Делаем расчитанные параметры текущими.
         }
+        this.solarTime+=dt;
     }
 
     calcOnePeriod(time=3600){
     //time - время в секундах, в течении которого выполняется расчёт нового положения тела. По умолчанию - 1 час (3600 с)
     //Функцию целесообразно вызывать через setTimeout
-        for(t=0;t<time;t+=dt){
+        for(let t=0;t<time;t+=dt){
             this.calcOneTic();
         }
     }

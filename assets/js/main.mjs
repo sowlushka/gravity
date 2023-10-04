@@ -23,14 +23,7 @@ solarSys.addBody(bSun);
 solarSys.addBody(bEarth);
 solarSys.addBody(bMoon);
 
-let bodies=[bSun, bEarth, bMoon];
-for(let time=0;time<3600*24*180;time+=cnst.dt){//Время - 180 суток
-    for(let i=0;i<bodies.length;++i){
-        bodies[i].calcForces(bodies.filter((el,index)=>index!=i));//Выполняем последовательно расчёты новых параметров для каждого тела
-    }
-    for(let i=0;i<bodies.length;++i){
-        bodies[i].setNewCoor();
-    }
-}
 
-console.log(bEarth);
+//solarSys.calcOnePeriod(24*3600*180);//Это корректно работает, но пока закоменчено, чтобы проверить вызов через setTimeout
+setTimeout(solarSys.calcOnePeriod,0, 24*3600*180);//Это работает только в таком варианте setTimeout(solarSys.calcOnePeriod.bind(solarSys),0,24*3600*180);
+console.log(solarSys);
