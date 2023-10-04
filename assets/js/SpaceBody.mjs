@@ -43,13 +43,13 @@ export class SpaceBody{
             r=Math.sqrt(r);//Расстояние до тела
 
             for(let j=0;j<this.r.length;++j){//Вычисление суммарного изменения скорости по всем координатам с учётом каждой планеты
-                this.#newV[j]+=G*this.#m*bodies[i].m/(r**3)*(bodies[i].r[j]-this.r[j])*dt;//Добавляем приращение скорости за время dt по оси j. v=G*m*M/r3*(x-x0)*dt+v0
+                this.#newV[j]+=G*bodies[i].m/(r**3)*(bodies[i].r[j]-this.r[j])*dt;//Добавляем приращение скорости за время dt по оси j. v=G*m*M/r3*(x-x0)*dt+v0
             }
         }
 
         //Вычисляем новые координаты тела через время dt
         for(let j=0;j<this.r.length;++j){
-            this.#newR+=this.#newV[j]*dt;
+            this.#newR[j]+=this.#newV[j]*dt;
         }
     }
 
